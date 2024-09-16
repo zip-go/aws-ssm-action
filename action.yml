@@ -1,18 +1,24 @@
-name: 'The name of your action here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: 'SSM Send Command Action'
+description: 'Send commands to an EC2 instance via AWS SSM'
+author: 'Kayoung Yoon'
 
-# Define your inputs here.
 inputs:
-  milliseconds:
-    description: 'Your input description here'
+  instanceId:
+    description: 'The ID of the EC2 instance you want to connect to'
+    required: false
+  instanceName:
+    description: 'The name of the EC2 instance you want to connect to'
+    required: false
+  workingDirectory:
+    description: 'The working directory where you want to execute commands'
     required: true
-    default: '1000'
+  commands:
+    description: 'The commands you want to execute on the instance'
+    required: true
 
-# Define your outputs here.
 outputs:
-  time:
-    description: 'Your output description here'
+  commandId:
+    description: 'The ID of the executed command'
 
 runs:
   using: node20
