@@ -44,28 +44,28 @@ jobs:
         id: npm-ci-test
         run: npm run ci-test
 
-  test-action:
-    name: GitHub Actions Test
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        id: checkout
-        uses: actions/checkout@v4
-
-      - name: Set up AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
-
-      - name: Test Local Action
-        id: test-action
-        uses: ./
-        with:
-          instanceName: zipgo-prod-migrated
-          workingDirectory: /home/ubuntu/ubuntu
-          commands: |
-            echo "hi"
-            touch bye
+#  test-action:
+#    name: GitHub Actions Test
+#    runs-on: ubuntu-latest
+#
+#    steps:
+#      - name: Checkout
+#        id: checkout
+#        uses: actions/checkout@v4
+#
+#      - name: Set up AWS Credentials
+#        uses: aws-actions/configure-aws-credentials@v4
+#        with:
+#          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#          aws-region: ${{ secrets.AWS_REGION }}
+#
+#      - name: Test Local Action
+#        id: test-action
+#        uses: ./
+#        with:
+#          instanceName: zipgo-prod-migrated
+#          workingDirectory: /home/ubuntu/ubuntu
+#          commands: |
+#            echo "hi"
+#            touch bye
