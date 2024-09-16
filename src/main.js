@@ -46,7 +46,7 @@ const run = async () => {
       required: true
     })
     const instanceName = core.getInput('instanceName', { required: false })
-    const commands = core.getInput('commands', { required: true })
+    const commands = core.getMultilineInput('commands', { required: true })
     // const workingDirectory = '/home/ubuntu/ubuntu'
     // const instanceName = 'zipgo-prod-migrated'
     // const command = [
