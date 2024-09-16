@@ -8,7 +8,7 @@ Actions workflows.
 
 ### Send Commands to an EC2 Instance
 
-#### Before using this action, make sure to include the following:
+Before using this action, make sure to include the following
 
 ```yaml
 - name: Configure AWS credentials
@@ -18,7 +18,7 @@ Actions workflows.
     aws-region: us-east-1
 ```
 
-#### Send commands to an EC2 instance:
+#### Send commands to an EC2 instance
 
 ```yaml
 - name: Send commands to EC2 instance
