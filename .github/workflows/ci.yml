@@ -43,3 +43,22 @@ jobs:
       - name: Test
         id: npm-ci-test
         run: npm run ci-test
+
+  test-action:
+    name: GitHub Actions Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@v4
+
+      - name: Test Local Action
+        id: test-action
+        uses: ./
+        with:
+          instanceName: test-name
+          workingDirectory: /home/ubuntu
+          commands:
+            - 'echo "hi"'
+            - 'touch bye'
