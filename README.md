@@ -1,10 +1,8 @@
-## SSM Send Command Action for GitHub Actions
+# SSM Send Command Action for GitHub Actions
 
 This action sends commands to an EC2 instance via AWS Systems Manager (SSM). You
 can use it to execute commands on your EC2 instances directly from your GitHub
 Actions workflows.
-
-<!-- tocstop -->
 
 ## Example of Usage
 
