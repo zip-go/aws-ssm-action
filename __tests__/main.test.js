@@ -1,96 +1,85 @@
-/**
- * Unit tests for the action's main functionality, src/main.js
- */
 const core = require('@actions/core')
 const main = require('../src/main')
+const { SSMClient } = require('@aws-sdk/client-ssm')
+const { EC2Client } = require('@aws-sdk/client-ec2')
 
 // Mock the GitHub Actions core library
 const debugMock = jest.spyOn(core, 'debug').mockImplementation()
 const getInputMock = jest.spyOn(core, 'getInput').mockImplementation()
+const getMultilineInputMock = jest
+  .spyOn(core, 'getMultilineInput')
+  .mockImplementation()
 const setFailedMock = jest.spyOn(core, 'setFailed').mockImplementation()
 const setOutputMock = jest.spyOn(core, 'setOutput').mockImplementation()
 
-// Mock the action's main function
-const runMock = jest.spyOn(main, 'run')
+// Mock AWS SDK clients
+jest.mock('@aws-sdk/client-ec2', () => ({
+  EC2Client: jest.fn(),
+  DescribeInstancesCommand: jest.fn()
+}))
 
-// Other utilities
-const timeRegex = /^\d{2}:\d{2}:\d{2}/
+jest.mock('@aws-sdk/client-ssm', () => ({
+  SSMClient: jest.fn(),
+  SendCommandCommand: jest.fn()
+}))
 
 describe('action', () => {
   beforeEach(() => {
     jest.clearAllMocks()
   })
 
-  it('sets the time output', async () => {
-    // Set the action's inputs as return values from core.getInput()
+  it('fetches instance ID and sends SSM command', async () => {
+    // Mock inputs for instanceName and commands
     getInputMock.mockImplementation(name => {
       switch (name) {
-        case 'milliseconds':
-          return '500'
+        case 'instanceName':
+          return 'my-ec2-instance'
         default:
           return ''
       }
     })
 
-    await main.run()
-    expect(runMock).toHaveReturned()
+    getMultilineInputMock.mockImplementation(name => {
+      switch (name) {
+        case 'commands':
+          return ['echo "Hello World"']
+        default:
+          return ''
+      }
+    })
 
-    // Verify that all of the core library functions were called correctly
-    expect(debugMock).toHaveBeenNthCalledWith(1, 'Waiting 500 milliseconds ...')
-    expect(debugMock).toHaveBeenNthCalledWith(
-      2,
-      expect.stringMatching(timeRegex)
-    )
-    expect(debugMock).toHaveBeenNthCalledWith(
-      3,
-      expect.stringMatching(timeRegex)
-    )
-    expect(setOutputMock).toHaveBeenNthCalledWith(
-      1,
-      'time',
-      expect.stringMatching(timeRegex)
-    )
+    // Mock EC2 describe instances response
+    const mockInstanceId = 'i-1234567890abcdef0'
+    EC2Client.prototype.send = jest.fn().mockResolvedValue({
+      Reservations: [
+        {
+          Instances: [{ InstanceId: mockInstanceId }]
+        }
+      ]
+    })
+
+    // Mock SSM send command response
+    const mockCommandId = 'abc-123'
+    SSMClient.prototype.send = jest.fn().mockResolvedValue({
+      Command: { CommandId: mockCommandId }
+    })
+
+    // Run the action
+    await main.run()
+
+    // Check that the correct output was set
+    expect(setOutputMock).toHaveBeenCalledWith('commandId', mockCommandId)
   })
 
-  it('sets a failed status', async () => {
-    // Set the action's inputs as return values from core.getInput()
-    getInputMock.mockImplementation(name => {
-      switch (name) {
-        case 'milliseconds':
-          return 'this is not a number'
-        default:
-          return ''
-      }
-    })
+  it('fails if no instanceId or instanceName is provided', async () => {
+    // Mock empty inputs
+    getInputMock.mockImplementation(name => '')
 
     await main.run()
-    expect(runMock).toHaveReturned()
 
-    // Verify that all of the core library functions were called correctly
-    expect(setFailedMock).toHaveBeenNthCalledWith(
-      1,
-      'milliseconds not a number'
-    )
-  })
-
-  it('fails if no input is provided', async () => {
-    // Set the action's inputs as return values from core.getInput()
-    getInputMock.mockImplementation(name => {
-      switch (name) {
-        case 'milliseconds':
-          throw new Error('Input required and not supplied: milliseconds')
-        default:
-          return ''
-      }
-    })
-
-    await main.run()
-    expect(runMock).toHaveReturned()
-
-    // Verify that all of the core library functions were called correctly
-    expect(setFailedMock).toHaveBeenNthCalledWith(
-      1,
-      'Input required and not supplied: milliseconds'
+    // Expect the action to fail due to missing inputs
+    expect(setFailedMock).toHaveBeenCalledWith(
+      'You must provide instance id or instance name.'
     )
   })
 })
