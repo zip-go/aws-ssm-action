@@ -64,8 +64,8 @@ jobs:
         id: test-action
         uses: ./
         with:
-          instanceName: test-name
-          workingDirectory: /home/ubuntu
+          instanceName: zipgo-prod-migrated
+          workingDirectory: /home/ubuntu/ubuntu
           commands: |
             echo "hi"
             touch bye
