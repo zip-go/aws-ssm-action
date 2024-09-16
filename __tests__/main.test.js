@@ -6,6 +6,9 @@ const { EC2Client } = require('@aws-sdk/client-ec2')
 // Mock the GitHub Actions core library
 const debugMock = jest.spyOn(core, 'debug').mockImplementation()
 const getInputMock = jest.spyOn(core, 'getInput').mockImplementation()
+const getMultilineInputMock = jest
+  .spyOn(core, 'getMultilineInput')
+  .mockImplementation()
 const setFailedMock = jest.spyOn(core, 'setFailed').mockImplementation()
 const setOutputMock = jest.spyOn(core, 'setOutput').mockImplementation()
 
@@ -31,6 +34,13 @@ describe('action', () => {
       switch (name) {
         case 'instanceName':
           return 'my-ec2-instance'
+        default:
+          return ''
+      }
+    })
+
+    getMultilineInputMock.mockImplementation(name => {
+      switch (name) {
         case 'commands':
           return ['echo "Hello World"']
         default:
