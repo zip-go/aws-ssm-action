@@ -29,7 +29,8 @@ jobs:
           aws-region: us-east-1
 ```
 
-`aws-actions/configure-aws-credentials` is required for the action to get AWS credentials, for more information see section "Credentials"
+`aws-actions/configure-aws-credentials` is required for the action to get AWS
+credentials. For more information see section "Credentials"
 
 #### Actual Action for Sending Commands
 
