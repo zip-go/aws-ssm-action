@@ -8,17 +8,28 @@ Actions workflows.
 
 ### Send Commands to an EC2 Instance
 
-Before using this action, make sure to include the following
+#### Prerequisites
+
+Before using this action, make sure to include the following.
 
 ```yaml
-- name: Configure AWS credentials
-  uses: aws-actions/configure-aws-credentials@v4
-  with:
-    role-to-assume: arn:aws:iam::123456789012:role/my-github-actions-role
-    aws-region: us-east-1
+# .github/workflows/your_workflow.yml
+
+# ...
+permissions:
+  id-token: write # Required for the action to assume the role
+
+jobs:
+  # ...
+  - steps:
+      - name: Configure AWS credentials # Required for the action to get AWS credentials, for more information see section "Credentials"
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::YOUR_AWS_ACCOUNT_ID:role/my-github-actions-role
+          aws-region: us-east-1
 ```
 
-#### Send commands to an EC2 instance
+#### Actual Action for Sending Commands
 
 ```yaml
 - name: Send commands to EC2 instance
