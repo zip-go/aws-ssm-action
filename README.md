@@ -22,12 +22,14 @@ permissions:
 jobs:
   # ...
   - steps:
-      - name: Configure AWS credentials # Required for the action to get AWS credentials, for more information see section "Credentials"
+      - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: arn:aws:iam::YOUR_AWS_ACCOUNT_ID:role/my-github-actions-role
           aws-region: us-east-1
 ```
+
+`aws-actions/configure-aws-credentials` is required for the action to get AWS credentials, for more information see section "Credentials"
 
 #### Actual Action for Sending Commands
 
